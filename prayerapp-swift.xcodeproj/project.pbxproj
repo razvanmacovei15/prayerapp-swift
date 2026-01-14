@@ -6,13 +6,39 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		935651802F163F36006D3E90 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 9356517F2F163F36006D3E90 /* CLAUDE.md */; };
+		9356518D2F16416E006D3E90 /* 03-optionals.md in Resources */ = {isa = PBXBuildFile; fileRef = 935651812F16416E006D3E90 /* 03-optionals.md */; };
+		9356518E2F16416E006D3E90 /* 01-project-structure.md in Resources */ = {isa = PBXBuildFile; fileRef = 935651892F16416E006D3E90 /* 01-project-structure.md */; };
+		9356518F2F16416E006D3E90 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 9356518B2F16416E006D3E90 /* README.md */; };
+		935651902F16416E006D3E90 /* 01-what-is-mvvm.md in Resources */ = {isa = PBXBuildFile; fileRef = 935651842F16416E006D3E90 /* 01-what-is-mvvm.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		9356514B2F1629CA006D3E90 /* prayerapp-swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "prayerapp-swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9356517F2F163F36006D3E90 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		935651812F16416E006D3E90 /* 03-optionals.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "03-optionals.md"; sourceTree = "<group>"; };
+		935651842F16416E006D3E90 /* 01-what-is-mvvm.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "01-what-is-mvvm.md"; sourceTree = "<group>"; };
+		935651892F16416E006D3E90 /* 01-project-structure.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "01-project-structure.md"; sourceTree = "<group>"; };
+		9356518B2F16416E006D3E90 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		93D5AB932F1686BC0006AFF9 /* Exceptions for "prayerapp-swift" folder in "prayerapp-swift" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9356514A2F1629CA006D3E90 /* prayerapp-swift */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9356514D2F1629CA006D3E90 /* prayerapp-swift */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				93D5AB932F1686BC0006AFF9 /* Exceptions for "prayerapp-swift" folder in "prayerapp-swift" target */,
+			);
 			path = "prayerapp-swift";
 			sourceTree = "<group>";
 		};
@@ -32,6 +58,8 @@
 		935651422F1629CA006D3E90 = {
 			isa = PBXGroup;
 			children = (
+				9356518C2F16416E006D3E90 /* lessons */,
+				9356517F2F163F36006D3E90 /* CLAUDE.md */,
 				9356514D2F1629CA006D3E90 /* prayerapp-swift */,
 				9356514C2F1629CA006D3E90 /* Products */,
 			);
@@ -43,6 +71,73 @@
 				9356514B2F1629CA006D3E90 /* prayerapp-swift.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		935651822F16416E006D3E90 /* 01-swift-basics */ = {
+			isa = PBXGroup;
+			children = (
+				935651812F16416E006D3E90 /* 03-optionals.md */,
+			);
+			path = "01-swift-basics";
+			sourceTree = "<group>";
+		};
+		935651832F16416E006D3E90 /* 02-swiftui-fundamentals */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "02-swiftui-fundamentals";
+			sourceTree = "<group>";
+		};
+		935651852F16416E006D3E90 /* 03-mvvm-architecture */ = {
+			isa = PBXGroup;
+			children = (
+				935651842F16416E006D3E90 /* 01-what-is-mvvm.md */,
+			);
+			path = "03-mvvm-architecture";
+			sourceTree = "<group>";
+		};
+		935651862F16416E006D3E90 /* 04-networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "04-networking";
+			sourceTree = "<group>";
+		};
+		935651872F16416E006D3E90 /* 05-authentication */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "05-authentication";
+			sourceTree = "<group>";
+		};
+		935651882F16416E006D3E90 /* 06-testing */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "06-testing";
+			sourceTree = "<group>";
+		};
+		9356518A2F16416E006D3E90 /* 07-xcode-essentials */ = {
+			isa = PBXGroup;
+			children = (
+				935651892F16416E006D3E90 /* 01-project-structure.md */,
+			);
+			path = "07-xcode-essentials";
+			sourceTree = "<group>";
+		};
+		9356518C2F16416E006D3E90 /* lessons */ = {
+			isa = PBXGroup;
+			children = (
+				935651822F16416E006D3E90 /* 01-swift-basics */,
+				935651832F16416E006D3E90 /* 02-swiftui-fundamentals */,
+				935651852F16416E006D3E90 /* 03-mvvm-architecture */,
+				935651862F16416E006D3E90 /* 04-networking */,
+				935651872F16416E006D3E90 /* 05-authentication */,
+				935651882F16416E006D3E90 /* 06-testing */,
+				9356518A2F16416E006D3E90 /* 07-xcode-essentials */,
+				9356518B2F16416E006D3E90 /* README.md */,
+			);
+			path = lessons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,6 +204,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9356518D2F16416E006D3E90 /* 03-optionals.md in Resources */,
+				9356518E2F16416E006D3E90 /* 01-project-structure.md in Resources */,
+				9356518F2F16416E006D3E90 /* README.md in Resources */,
+				935651902F16416E006D3E90 /* 01-what-is-mvvm.md in Resources */,
+				935651802F163F36006D3E90 /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +356,7 @@
 				DEVELOPMENT_TEAM = UU27PLANKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "prayerapp-swift/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -288,6 +389,7 @@
 				DEVELOPMENT_TEAM = UU27PLANKB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "prayerapp-swift/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
