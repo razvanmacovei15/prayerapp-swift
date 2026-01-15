@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  prayerapp-swift
-//
-//  Created by Razvan Macovei on 13.01.2026.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -13,55 +6,86 @@ struct ContentView: View {
     
     @State private var email = ""
     @State private var password = ""
-    @State private var resultMessage = ""
-    @State private var isLoading = false
     
-    private let authService = AuthService()
+    var viewModel: AuthViewModel
+    
+    // MARK: - Body
     
     var body: some View {
+        Group {
+            if viewModel.isCheckingAuth {
+                // Show loading while checking existing session
+                ProgressView("Loading...")
+            } else if viewModel.isAuthenticated {
+                // User is logged in - show main app
+                authenticatedView
+            } else {
+                // User is not logged in - show login
+                loginView
+            }
+        }
+    }
+    
+    // MARK: - Authenticated View
+    
+    private var authenticatedView: some View {
         VStack(spacing: 20) {
-            Text("Login Test")
+            Text("Welcome, \(viewModel.user?.firstName ?? "User")!")
+                .font(.largeTitle)
+            
+            Text("You are logged in")
+                .foregroundStyle(.secondary)
+            
+            Button("Logout") {
+                Task {
+                    await viewModel.logout()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+    
+    // MARK: - Login View
+    
+    private var loginView: some View {
+        VStack(spacing: 20) {
+            Text("Login")
                 .font(.largeTitle)
             
             TextField("Email", text: $email)
                 .textFieldStyle(.roundedBorder)
                 .textInputAutocapitalization(.never)
-
+            
             SecureField("Password", text: $password)
                 .textFieldStyle(.roundedBorder)
             
-            Button("Login") {
-                Task{
-                    await performLogin()
-                }
-            }.disabled(isLoading || email.isEmpty || password.isEmpty)
-            
-            if isLoading {
-                ProgressView()
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .foregroundStyle(.red)
+                    .font(.caption)
             }
             
-            Text(resultMessage)
-                .foregroundStyle(resultMessage.contains("Error") ? .red : .green)
-                .multilineTextAlignment(.center)
+            Button("Login") {
+                Task {
+                    await viewModel.login(email: email, password: password)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(viewModel.isLoading || email.isEmpty || password.isEmpty)
+            
+            if viewModel.isLoading {
+                ProgressView()
+            }
         }
         .padding()
-    }
-    
-    private func performLogin()  async {
-        isLoading = true
-        resultMessage = ""
-        
-        do {
-            let user = try await authService.login(email: email, password: password)
-            resultMessage = "Success! Welcome \(user.firstName ?? "") \(user.lastName ?? "")"
-        } catch {
-            resultMessage = "Error: \(error.localizedDescription)"
-        }
-        
-        isLoading = false
     }
 }
 
 #Preview {
-    ContentView()
+    let authService = AuthService(
+        apiClient: .shared,
+        keychainManager: .shared
+    )
+    return ContentView(viewModel: AuthViewModel(authService: authService))
 }

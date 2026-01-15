@@ -15,9 +15,30 @@ struct AuthTokens: Codable {
     let expiresIn: Int
     let tokenIssuedAt: Date
     
+    private var expirationDate: Date {
+        tokenIssuedAt.addingTimeInterval(TimeInterval(expiresIn * 60))
+    }
+
     var isExpired: Bool {
-        let expirationDate = tokenIssuedAt.addingTimeInterval(TimeInterval(expiresIn * 60))
-        return Date() >= expirationDate
+        Date() >= expirationDate
+    }
+
+    var isExpiringSoon: Bool {
+        let bufferSeconds: TimeInterval = 60
+        return Date() >= expirationDate.addingTimeInterval(-bufferSeconds)
+    }
+
+    var secondsUntilExpiry: TimeInterval {
+        expirationDate.timeIntervalSince(Date())
+    }
+
+    init(accessToken: String, refreshToken: String, tokenType: String, expiresIn: Int) {
+        self.accessToken = accessToken
+        self.refreshToken = refreshToken
+        self.tokenType = tokenType
+        self.expiresIn = expiresIn
+        
+        self.tokenIssuedAt = Date()
     }
     
     init(from response: LoginResponse) {

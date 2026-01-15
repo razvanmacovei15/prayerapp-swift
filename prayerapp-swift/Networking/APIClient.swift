@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class APIClient {
     
     // MARK: - Singleton
@@ -14,6 +15,8 @@ final class APIClient {
     static let shared = APIClient()
     
     private init() {}
+    
+    weak var tokenProvider: TokenProviderProtocol?
     
     // MARK: - Properties
     
@@ -70,8 +73,6 @@ final class APIClient {
             break
         case 401:
             throw APIError.unauthorized
-        case 500...599:
-            throw APIError.serverError(statusCode: httpResponse.statusCode)
         default:
             throw APIError.serverError(statusCode: httpResponse.statusCode)
         }
@@ -81,6 +82,42 @@ final class APIClient {
         } catch {
             print("Decoding error: \(error)")
             throw APIError.decodingError
+        }
+    }
+    
+    func authenticatedRequest<T: Decodable>(
+        endpoint: String,
+        method: String = "GET",
+        body: (any Encodable)? = nil
+    ) async throws -> T {
+        
+        guard let tokenProvider = tokenProvider else {
+            throw APIError.unauthorized
+        }
+        
+        let token = try await tokenProvider.getValidToken()
+        
+        do {
+            return try await request(
+                endpoint: endpoint,
+                method: method,
+                body: body,
+                token: token
+            )
+        } catch APIError.unauthorized {
+            do {
+                let newToken = try await tokenProvider.refreshToken()
+                
+                return try await request(
+                    endpoint: endpoint,
+                    method: method,
+                    body: body,
+                    token: newToken
+                )
+            } catch {
+                await tokenProvider.handleAuthenticationFailure()
+                throw APIError.unauthorized
+            }
         }
     }
 }

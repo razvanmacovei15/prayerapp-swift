@@ -8,6 +8,7 @@
 import Foundation
 import Security
 
+@MainActor
 final class KeychainManager {
     
     static let shared = KeychainManager()
@@ -18,7 +19,7 @@ final class KeychainManager {
     private let authTokensKey = "authTokens"
     
     func saveTokens(_ tokens: AuthTokens) throws {
-        let data  = try JSONEncoder().encode(tokens)
+        let data = try JSONEncoder().encode(tokens)
         
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,

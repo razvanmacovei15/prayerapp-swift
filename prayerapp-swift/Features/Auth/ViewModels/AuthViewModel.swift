@@ -12,22 +12,30 @@ import Foundation
 final class AuthViewModel {
     private(set) var user: User?
     private(set) var isLoading: Bool = false
-    private(set) var isCheckingAuth:Bool = true
+    private(set) var isCheckingAuth: Bool = true
     private(set) var errorMessage: String?
     
     private let authService: AuthServiceProtocol
     
-    var isAuthenticated:Bool {
+    var isAuthenticated: Bool {
         user != nil
     }
     
-    init(authService: AuthServiceProtocol = AuthService()) {
+    init(authService: AuthServiceProtocol) {
         self.authService = authService
     }
     
     /// Called on app launch to check for existing valid session
     func checkExistingAuth() async {
-        // TODO: You'll implement this
+        isCheckingAuth = true
+        
+        defer { isCheckingAuth = false }
+        
+        do {
+            user = try await authService.checkExistingSession()
+        } catch {
+            user = nil
+        }
     }
     
     /// Login with email and password
@@ -53,6 +61,16 @@ final class AuthViewModel {
             try await authService.logout()
         } catch {
             print("Backend logout failed: \(error)")
+        }
+    }
+    
+    func checkAndRefreshIfNeeded() async {
+        guard isAuthenticated else { return }
+
+        do {
+            _ = try await authService.ensureValidToken()
+        } catch {
+            await logout()
         }
     }
 }

@@ -13,3 +13,4 @@ struct LoginResponse: Decodable {
     let expiresIn: Int
 }
 
+struct EmptyResponse: Decodable {}
