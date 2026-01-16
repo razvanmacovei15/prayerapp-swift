@@ -29,25 +29,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 - [x] **User** - User model with all fields
 - [x] **AuthTokens** - Token storage with `isExpired`, `isExpiringSoon`, `secondsUntilExpiry`
 - [x] **LoginRequest/LoginResponse** - Auth request/response models
-- [ ] **RegisterRequest** - Not yet implemented
+- [x] **RegisterRequest** - Registration request model
+
+#### Register Flow (100%)
+- [x] **RegisterRequest model** - `{firstName, lastName, email, password, timezoneOffsetMinutes}`
+- [x] **AuthServiceProtocol** - Added `register(request:)` method signature
+- [x] **AuthService.register()** - Implementation with token storage and user fetch
+- [x] **AuthViewModel.register()** - ViewModel method with loading/error state
 
 ### Next Steps (Priority Order)
 
-#### 1. Register Flow
-- Create `RegisterRequest` model matching backend: `{firstName, lastName, email, password, timezoneOffsetMinutes}`
-- Add `register()` method to `AuthServiceProtocol` and `AuthService`
-- Update `AuthViewModel` with `register()` method
-- Create `RegisterView` or update `ContentView` to include registration
+#### 1. Auth UI (IN PROGRESS)
+- [ ] Create `AuthTextField` reusable component ← **NEXT: Code provided, ready to type**
+- [ ] Create dedicated `LoginView` (separate from ContentView)
+- [ ] Create `RegisterView` with form validation
+- [ ] Update `ContentView` to use new auth views
 
-#### 2. Proper Auth UI
-- Create dedicated `LoginView` (separate from ContentView)
-- Create `RegisterView` with form validation
-- Create `AuthTextField` reusable component
-- Add navigation between login/register screens
-
-#### 3. Main App Navigation
+#### 2. Main App Navigation
 - Create `MainTabView` for authenticated users
 - Implement tab-based navigation (Spaces, Journal, Profile)
+- Update `ContentView` to show `MainTabView` when authenticated
 - Update `ContentView` to show `MainTabView` when authenticated
 
 #### 4. Spaces Feature
