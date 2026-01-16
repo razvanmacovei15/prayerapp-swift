@@ -38,6 +38,26 @@ final class AuthViewModel {
         }
     }
     
+    func register(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String,
+        timezoneOffsetMinutes: Int
+    ) async {
+        isLoading = true
+        errorMessage = nil
+        
+        defer { isLoading = false }
+        
+        do {
+            let request = RegisterRequest(firstName: firstName, lastName: lastName, email: email, password: password, timezoneOffsetMinutes: timezoneOffsetMinutes)
+            user = try await authService.register(request: request)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+    
     /// Login with email and password
     func login(email: String, password: String) async {
         isLoading = true

@@ -2,6 +2,91 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with this iOS Swift/SwiftUI application.
 
+## Implementation Status
+
+### Completed Features
+
+#### Authentication System (100%)
+- [x] **Login flow** - Email/password authentication via `/api/auth/login`
+- [x] **Logout flow** - Clears tokens locally + calls backend `/api/auth/logout`
+- [x] **Token storage** - Secure Keychain storage via `KeychainManager`
+- [x] **Session restoration** - `checkExistingSession()` restores user on app launch
+- [x] **Proactive token refresh** - Scheduled 60 seconds before expiry via `scheduleTokenRefresh()`
+- [x] **Pre-request token validation** - `ensureValidToken()` checks before API calls
+- [x] **401 retry logic** - `authenticatedRequest()` retries once with fresh token
+- [x] **Refresh deduplication** - Shared `Task` prevents thundering herd
+- [x] **Background return handling** - `checkAndRefreshIfNeeded()` on app foreground
+- [x] **TokenProviderProtocol** - Breaks circular dependency between APIClient and AuthService
+
+#### Networking (80%)
+- [x] **APIClient** - Base networking with `request()` method
+- [x] **authenticatedRequest()** - Auto token injection + 401 retry
+- [x] **APIError** - Error types with localized descriptions
+- [x] **Environment config** - Dev/prod base URLs
+- [ ] **JSON:API parsing** - Generic response wrapper (not yet needed)
+
+#### Models
+- [x] **User** - User model with all fields
+- [x] **AuthTokens** - Token storage with `isExpired`, `isExpiringSoon`, `secondsUntilExpiry`
+- [x] **LoginRequest/LoginResponse** - Auth request/response models
+- [ ] **RegisterRequest** - Not yet implemented
+
+### Next Steps (Priority Order)
+
+#### 1. Register Flow
+- Create `RegisterRequest` model matching backend: `{firstName, lastName, email, password, timezoneOffsetMinutes}`
+- Add `register()` method to `AuthServiceProtocol` and `AuthService`
+- Update `AuthViewModel` with `register()` method
+- Create `RegisterView` or update `ContentView` to include registration
+
+#### 2. Proper Auth UI
+- Create dedicated `LoginView` (separate from ContentView)
+- Create `RegisterView` with form validation
+- Create `AuthTextField` reusable component
+- Add navigation between login/register screens
+
+#### 3. Main App Navigation
+- Create `MainTabView` for authenticated users
+- Implement tab-based navigation (Spaces, Journal, Profile)
+- Update `ContentView` to show `MainTabView` when authenticated
+
+#### 4. Spaces Feature
+- Create `Space` model
+- Create `SpacesService` with CRUD operations using `authenticatedRequest()`
+- Create `SpacesViewModel`
+- Create `SpacesListView` and `SpaceDetailView`
+
+#### 5. Prayer Cards Feature
+- Create `PrayerCard` model with all card types
+- Create `PrayerCardsService`
+- Create `PrayerCardsViewModel`
+- Create card views for different types
+
+#### 6. Unit Tests
+- Create `MockAuthService` for testing
+- Write `AuthViewModelTests`
+- Write `AuthServiceTests`
+
+### Files Created/Modified
+
+| File | Status | Purpose |
+|------|--------|---------|
+| `Networking/TokenProviderProtocol.swift` | NEW | Protocol for APIClient token management |
+| `Networking/APIClient.swift` | MODIFIED | Added `tokenProvider`, `authenticatedRequest()` |
+| `Networking/APIError.swift` | EXISTS | Error handling |
+| `Features/Auth/Models/AuthTokens.swift` | MODIFIED | Added `isExpiringSoon`, `secondsUntilExpiry` |
+| `Features/Auth/Models/User.swift` | EXISTS | User model |
+| `Features/Auth/Models/LoginRequest.swift` | EXISTS | Login request body |
+| `Features/Auth/Models/LoginResponse.swift` | MODIFIED | Added `EmptyResponse` |
+| `Features/Auth/Services/AuthService.swift` | MODIFIED | Full token refresh implementation |
+| `Features/Auth/ViewModels/AuthViewModel.swift` | MODIFIED | Session management methods |
+| `Core/Utilities/KeychainManager.swift` | EXISTS | Secure token storage |
+| `Core/Config/Environment.swift` | EXISTS | API configuration |
+| `prayerapp_swiftApp.swift` | MODIFIED | Dependency wiring, lifecycle observers |
+| `ContentView.swift` | MODIFIED | Auth state UI (temporary) |
+
+---
+
 ## Project Overview
 
 **ICF Prayer App** - A native iOS prayer community platform being rebuilt from React Native to Swift/SwiftUI. The app enables users to create, share, and manage prayer requests within different spaces (communities).
@@ -206,6 +291,26 @@ final class AuthViewModel {
 3. **Use `guard let` for early returns** - Keeps code flat
 4. **Trailing closure syntax** - For single closures
 5. **Explicit access control** - Mark `private`, `private(set)`, etc.
+
+### Swift 6 Concurrency Notes
+This project uses Swift 6 strict concurrency. Key patterns:
+
+1. **All auth-related classes are `@MainActor`** - `AuthService`, `AuthViewModel`, `APIClient`, `KeychainManager`
+2. **No default parameters referencing singletons** - Swift 6 evaluates defaults in caller's context
+   ```swift
+   // BAD - causes concurrency error in Swift 6
+   init(apiClient: APIClient = .shared) { }
+
+   // GOOD - pass dependencies explicitly
+   init(apiClient: APIClient) { }
+   ```
+3. **Wire dependencies in App init** - Create services in `prayerapp_swiftApp.init()` and pass down
+4. **Use `State(initialValue:)` wrapper** - When initializing @State in View init:
+   ```swift
+   init() {
+       _viewModel = State(initialValue: AuthViewModel(authService: authService))
+   }
+   ```
 
 ### Safe Optional Handling
 
@@ -798,7 +903,7 @@ final class MockAuthService: AuthServiceProtocol {
 ### Building
 ```bash
 # Build for simulator (from project root)
-xcodebuild -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 16' build
+xcodebuild -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 17' build
 
 # Clean build folder
 xcodebuild -scheme prayerapp-swift clean
@@ -807,10 +912,10 @@ xcodebuild -scheme prayerapp-swift clean
 ### Running Tests
 ```bash
 # Run all tests
-xcodebuild test -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 16'
+xcodebuild test -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 17'
 
 # Run specific test class
-xcodebuild test -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 16' -only-testing:prayerapp-swiftTests/AuthViewModelTests
+xcodebuild test -scheme prayerapp-swift -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:prayerapp-swiftTests/AuthViewModelTests
 ```
 
 ### List Available Simulators

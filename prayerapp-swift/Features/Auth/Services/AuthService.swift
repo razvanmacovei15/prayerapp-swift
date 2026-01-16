@@ -7,6 +7,7 @@
 import Foundation
 
 protocol AuthServiceProtocol {
+    func register(request: RegisterRequest) async throws -> User
     func login(email: String, password: String) async throws -> User
     func logout() async throws
     func getCurrentUser() async throws -> User
@@ -36,6 +37,22 @@ final class AuthService: AuthServiceProtocol, TokenProviderProtocol {
     }
     
     // MARK: - Public Methods
+    
+    func register(request: RegisterRequest) async throws -> User {
+        let response: LoginResponse = try await apiClient.request(
+            endpoint: "/api/auth/register",
+            method: "POST",
+            body: request
+        )
+        
+        let tokens = AuthTokens(from: response)
+        
+        try keychainManager.saveTokens(tokens)
+        
+        scheduleTokenRefresh()
+        
+        return try await getCurrentUser()
+    }
     
     func login(email: String, password: String) async throws -> User {
         let loginRequest = LoginRequest(email: email, password: password)
