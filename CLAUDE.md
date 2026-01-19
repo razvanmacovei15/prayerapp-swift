@@ -39,31 +39,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ### Next Steps (Priority Order)
 
-#### 1. Auth UI (IN PROGRESS)
-- [ ] Create `AuthTextField` reusable component ← **NEXT: Code provided, ready to type**
-- [ ] Create dedicated `LoginView` (separate from ContentView)
-- [ ] Create `RegisterView` with form validation
-- [ ] Update `ContentView` to use new auth views
+#### 1. Auth UI (100%) ✅
+- [x] Create `AuthTextField` reusable component
+- [x] Create dedicated `LoginView` (separate from ContentView)
+- [x] Create `RegisterView` with form validation
+- [x] Update `ContentView` to use new auth views
+- [ ] **PENDING**: Update LoginView/RegisterView to use `NavigationStack` + `.toolbar` for iOS 26 liquid glass headers (pattern provided, ready to implement)
 
-#### 2. Main App Navigation
+#### 2. Main App Navigation ← **NEXT**
 - Create `MainTabView` for authenticated users
 - Implement tab-based navigation (Spaces, Journal, Profile)
 - Update `ContentView` to show `MainTabView` when authenticated
-- Update `ContentView` to show `MainTabView` when authenticated
 
-#### 4. Spaces Feature
+#### 3. Spaces Feature
 - Create `Space` model
 - Create `SpacesService` with CRUD operations using `authenticatedRequest()`
 - Create `SpacesViewModel`
 - Create `SpacesListView` and `SpaceDetailView`
 
-#### 5. Prayer Cards Feature
+#### 4. Prayer Cards Feature
 - Create `PrayerCard` model with all card types
 - Create `PrayerCardsService`
 - Create `PrayerCardsViewModel`
 - Create card views for different types
 
-#### 6. Unit Tests
+#### 5. Unit Tests
 - Create `MockAuthService` for testing
 - Write `AuthViewModelTests`
 - Write `AuthServiceTests`
@@ -79,12 +79,40 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 | `Features/Auth/Models/User.swift` | EXISTS | User model |
 | `Features/Auth/Models/LoginRequest.swift` | EXISTS | Login request body |
 | `Features/Auth/Models/LoginResponse.swift` | MODIFIED | Added `EmptyResponse` |
-| `Features/Auth/Services/AuthService.swift` | MODIFIED | Full token refresh implementation |
-| `Features/Auth/ViewModels/AuthViewModel.swift` | MODIFIED | Session management methods |
+| `Features/Auth/Models/RegisterRequest.swift` | NEW | Registration request body |
+| `Features/Auth/Services/AuthService.swift` | MODIFIED | Full token refresh + `register()` method |
+| `Features/Auth/ViewModels/AuthViewModel.swift` | MODIFIED | Session management + `register()` method |
 | `Core/Utilities/KeychainManager.swift` | EXISTS | Secure token storage |
 | `Core/Config/Environment.swift` | EXISTS | API configuration |
 | `prayerapp_swiftApp.swift` | MODIFIED | Dependency wiring, lifecycle observers |
-| `ContentView.swift` | MODIFIED | Auth state UI (temporary) |
+| `ContentView.swift` | MODIFIED | Navigation between LoginView/RegisterView + authenticated state |
+| `Features/Auth/Views/Components/AuthTextField.swift` | NEW | Reusable text field with focus state, secure entry, eye toggle |
+| `Features/Auth/Views/LoginView.swift` | NEW | Login screen with email/password fields |
+| `Features/Auth/Views/RegisterView.swift` | NEW | Registration screen with validation |
+
+---
+
+## 📝 Session Log
+
+### 2026-01-19
+**Accomplished:**
+- Created `AuthTextField` reusable component with `@Binding`, `@State`, `@FocusState`
+- Created `LoginView` with styled inputs, error handling, navigation callback
+- Created `RegisterView` with form validation, newsletter checkbox, alert dialogs
+- Updated `ContentView` to use new auth views with `showingRegister` state toggle
+- Discussed iOS 26 liquid glass — should use `NavigationStack` + `.toolbar` for automatic glass headers
+
+**Concepts Learned:**
+- SwiftUI View struct basics and `body` computed property
+- `@State` for internal state, `@Binding` for two-way parent connection
+- `@FocusState` for keyboard focus tracking
+- Extracted computed properties for cleaner `body`
+- `@ViewBuilder` for conditional views
+- iOS 26 liquid glass via `NavigationStack` + `.navigationTitle` + `.toolbar`
+
+**Next Session:**
+- Implement liquid glass headers using `NavigationStack` pattern (code provided)
+- Start Main App Navigation (MainTabView)
 
 ---
 
