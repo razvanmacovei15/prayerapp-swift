@@ -59,12 +59,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 - [x] Update `ContentView` to use new auth views
 - [ ] **PENDING**: Update LoginView/RegisterView to use `NavigationStack` + `.toolbar` for iOS 26 liquid glass headers (pattern provided, ready to implement)
 
-#### 2. Main App Navigation ← **NEXT**
-- Create `MainTabView` for authenticated users
-- Implement tab-based navigation (Spaces, Journal, Profile)
-- Update `ContentView` to show `MainTabView` when authenticated
+#### 2. Main App Navigation (100%) ✅
+- [x] Create `MainTabView` for authenticated users
+- [x] Implement tab-based navigation (Spaces, Journal)
+- [x] Update `ContentView` to show `MainTabView` when authenticated
+- [x] Fix tab icons using new `Tab` syntax + `.environment(\.symbolVariants, .none)`
 
-#### 3. Spaces Feature
+#### 3. Spaces Feature ← **NEXT**
 - Create `Space` model
 - Create `SpacesService` with CRUD operations using `authenticatedRequest()`
 - Create `SpacesViewModel`
@@ -102,12 +103,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 | `Features/Auth/Views/Components/AuthTextField.swift` | NEW | Reusable text field with focus state, secure entry, eye toggle |
 | `Features/Auth/Views/LoginView.swift` | NEW | Login screen with email/password fields |
 | `Features/Auth/Views/RegisterView.swift` | NEW | Registration screen with validation |
+| `Components/Navigation/MainTabView.swift` | NEW | Tab-based navigation with AppTab enum |
+| `Features/Spaces/Views/SpacesView.swift` | NEW | Placeholder for Spaces tab |
+| `Features/Journal/Views/JournalView.swift` | NEW | Placeholder for Journal tab |
+| `Features/Profile/Views/ProfileView.swift` | NEW | Profile view with logout (not in tabs yet) |
 
 ---
 
 ## 📝 Session Log
 
-### 2026-01-19
+### 2026-01-19 (Session 1)
 **Accomplished:**
 - Created `AuthTextField` reusable component with `@Binding`, `@State`, `@FocusState`
 - Created `LoginView` with styled inputs, error handling, navigation callback
@@ -123,9 +128,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 - `@ViewBuilder` for conditional views
 - iOS 26 liquid glass via `NavigationStack` + `.navigationTitle` + `.toolbar`
 
+### 2026-01-19 (Session 2)
+**Accomplished:**
+- Created `MainTabView` with tab-based navigation
+- Created placeholder views: `SpacesView`, `JournalView`, `ProfileView`
+- Updated `ContentView` to show `MainTabView` when authenticated
+- Fixed tab icons auto-fill issue using new `Tab` syntax + `.environment(\.symbolVariants, .none)`
+- Renamed enum from `Tab` to `AppTab` to avoid conflict with SwiftUI's `Tab` view
+
+**Concepts Learned:**
+- `TabView` with `selection` binding for tab state
+- New `Tab` view syntax (replacing deprecated `.tabItem`)
+- `.environment(\.symbolVariants, .none)` to disable auto-fill on tab icons
+- Enum naming conflicts with SwiftUI types
+
 **Next Session:**
-- Implement liquid glass headers using `NavigationStack` pattern (code provided)
-- Start Main App Navigation (MainTabView)
+- Add Profile tab back with logout functionality (optional)
+- Start Spaces feature (models, API, list view)
 
 ---
 
