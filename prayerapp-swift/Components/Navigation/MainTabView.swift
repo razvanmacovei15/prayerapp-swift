@@ -13,45 +13,40 @@ import SwiftUI
 // 2. Gives autocomplete in Xcode
 // 3. Makes code more readable than using raw strings or integers
 
-enum Tab: String {
-    case spaces = "Spaces"
-    case journal = "Journal"
-    case profile = "Profile"
-}
+
 
 // MARK: - MainTabView
 
 struct MainTabView: View {
-
+    
     // MARK: - Properties
-
+    
     // The viewModel is passed from parent (ContentView)
     // We don't use @State here because the viewModel is created elsewhere
     var viewModel: AuthViewModel
-
+    
     // @State tracks which tab is currently selected
     // When this changes, SwiftUI automatically updates the UI
-    @State private var selectedTab: Tab = .spaces
-
+    @State private var selectedTab: AppTab = .spaces
+    
     // MARK: - Body
-
+    
     var body: some View {
         TabView(selection: $selectedTab) {
-
-            // MARK: Spaces Tab
-            SpacesView()
-                .tabItem {
-                    Label("Spaces", systemImage: "square.grid.2x2")
-                }
-                .tag(Tab.spaces)
-
-            // MARK: Journal Tab
-            JournalView()
-                .tabItem {
-                    Label("Journal", systemImage: "book.closed")
-                }
-                .tag(Tab.journal)
-
+            
+            Tab(value: AppTab.spaces) {
+                SpacesView()
+            } label : {
+                Label("Spaces", systemImage: "square.grid.2x2")
+                    .environment(\.symbolVariants, .none)
+            }
+            
+            Tab(value: AppTab.journal) {
+                JournalView()
+            } label: {
+                Label("Journal", systemImage: "book.closed")
+                    .environment(\.symbolVariants, .none)
+            }
         }
     }
 }
