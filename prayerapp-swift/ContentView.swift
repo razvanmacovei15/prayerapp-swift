@@ -1,86 +1,71 @@
 import SwiftUI
 
 struct ContentView: View {
-    
+
     // MARK: - Properties
-    
-    @State private var email = ""
-    @State private var password = ""
-    
+
     var viewModel: AuthViewModel
-    
+
+    // @State tracks whether we're showing the Register screen vs Login screen
+    // When this changes, SwiftUI automatically re-renders the appropriate view
+    @State private var showingRegister = false
+
     // MARK: - Body
-    
+
     var body: some View {
         Group {
             if viewModel.isCheckingAuth {
                 // Show loading while checking existing session
-                ProgressView("Loading...")
+                loadingView
             } else if viewModel.isAuthenticated {
-                // User is logged in - show main app
-                authenticatedView
+                // User is logged in - show main app with tabs
+                MainTabView(viewModel: viewModel)
             } else {
-                // User is not logged in - show login
-                loginView
+                // User is not logged in - show auth flow
+                authenticationFlow
             }
         }
     }
-    
-    // MARK: - Authenticated View
-    
-    private var authenticatedView: some View {
-        VStack(spacing: 20) {
-            Text("Welcome, \(viewModel.user?.firstName ?? "User")!")
-                .font(.largeTitle)
-            
-            Text("You are logged in")
-                .foregroundStyle(.secondary)
-            
-            Button("Logout") {
-                Task {
-                    await viewModel.logout()
-                }
-            }
-            .buttonStyle(.borderedProminent)
+
+    // MARK: - Loading View
+
+    private var loadingView: some View {
+        ZStack {
+            Color(white: 0.11)
+                .ignoresSafeArea()
+
+            ProgressView("Loading...")
+                .tint(.white)
+                .foregroundStyle(.white)
         }
-        .padding()
     }
-    
-    // MARK: - Login View
-    
-    private var loginView: some View {
-        VStack(spacing: 20) {
-            Text("Login")
-                .font(.largeTitle)
-            
-            TextField("Email", text: $email)
-                .textFieldStyle(.roundedBorder)
-                .textInputAutocapitalization(.never)
-            
-            SecureField("Password", text: $password)
-                .textFieldStyle(.roundedBorder)
-            
-            if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundStyle(.red)
-                    .font(.caption)
-            }
-            
-            Button("Login") {
-                Task {
-                    await viewModel.login(email: email, password: password)
+
+    // MARK: - Authentication Flow
+
+    // This view switches between Login and Register based on showingRegister state
+    @ViewBuilder
+    private var authenticationFlow: some View {
+        if showingRegister {
+            // Show register view with callback to go back to login
+            RegisterView(
+                viewModel: viewModel,
+                onBackTapped: {
+                    showingRegister = false
                 }
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.isLoading || email.isEmpty || password.isEmpty)
-            
-            if viewModel.isLoading {
-                ProgressView()
-            }
+            )
+        } else {
+            // Show login view with callback to navigate to register
+            LoginView(
+                viewModel: viewModel,
+                onCreateAccountTapped: {
+                    showingRegister = true
+                }
+            )
         }
-        .padding()
     }
 }
+
+// MARK: - Preview
 
 #Preview {
     let authService = AuthService(
